@@ -17,6 +17,11 @@ class CustomerController extends Controller
     {
         $customers = Customer::SearchCustomers($request->search)
         ->select('id','name','kana','tel')->paginate(50);
+        if(!empty($request->search)){
+            $customers->appends([
+                'search'=>$request->search
+            ]);
+        }
         return Inertia::render('Customers/Index',[
             'customers' => $customers
         ]);
