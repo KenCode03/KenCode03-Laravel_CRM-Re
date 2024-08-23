@@ -1,11 +1,12 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, useForm  } from '@inertiajs/vue3';
 import { reactive } from 'vue'
 import { Inertia } from '@inertiajs/inertia'
 import { Core as YubinBangoCore } from "yubinbango-core2";
+import InputError from '@/Components/InputError.vue';
 
-const form = reactive({
+const form = useForm({
     name: null,
     kana: null,
     tel: null,
@@ -25,7 +26,11 @@ const fetchAddress = () => {
 
 
 const storeCustomer = () => {
-    Inertia.post('/customers' , form)
+    form.post('/customers' ,  {
+        onError: (errors) => {
+            console.log(errors);
+        }
+    });
 }
 
 </script>
@@ -51,59 +56,68 @@ const storeCustomer = () => {
                                                 <div class="relative">
                                                     <label for="name" class="leading-7 text-sm text-gray-600">顧客名</label>
                                                     <input type="text" id="name" name="name" v-model="form.name" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                    <InputError :message="form.errors.name" />
                                                 </div>
                                             </div>
                                             <div class="p-2 w-full">
                                                 <div class="relative">
                                                     <label for="kana" class="leading-7 text-sm text-gray-600">顧客名カナ</label>
                                                     <input type="text" id="kana" name="kana" v-model="form.kana" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                    <InputError :message="form.errors.kana" />
                                                 </div>
                                             </div>
                                             <div class="p-2 w-full">
                                                 <div class="relative">
                                                     <label for="tel" class="leading-7 text-sm text-gray-600">電話番号</label>
                                                     <input type="tel" id="tel" name="tel" v-model="form.tel" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                    <InputError :message="form.errors.tel" />
                                                 </div>
                                             </div>
                                             <div class="p-2 w-full">
                                                 <div class="relative">
                                                     <label for="email" class="leading-7 text-sm text-gray-600">メールアドレス</label>
                                                     <input type="email" id="email" name="email" v-model="form.email" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                    <InputError :message="form.errors.email" />
                                                 </div>
                                             </div>
                                             <div class="p-2 w-full">
                                                 <div class="relative">
                                                     <label for="postcode" class="leading-7 text-sm text-gray-600">郵便番号</label>
                                                     <input type="number" id="postcode" name="postcode" @change="fetchAddress" v-model="form.postcode" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                    <InputError :message="form.errors.postcode" />
                                                 </div>
                                             </div>
                                             <div class="p-2 w-full">
                                                 <div class="relative">
                                                     <label for="address" class="leading-7 text-sm text-gray-600">住所</label>
                                                     <input type="text" id="address" name="address" v-model="form.address" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                    <InputError :message="form.errors.address" />
                                                 </div>
                                             </div>
                                             <div class="p-2 w-full">
                                                 <div class="relative">
                                                     <label for="birthday" class="leading-7 text-sm text-gray-600">誕生日</label>
                                                     <input type="date" id="birthday" name="birthday" v-model="form.birthday" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                    <InputError :message="form.errors.birthday" />
                                                 </div>
                                             </div>
                                             <div class="p-2 w-full">
                                                 <div class="relative">
                                                     <label class="leading-7 text-sm text-gray-600">性別</label>
                                                     <input type="radio" id="gender0" name="gender" v-model="form.gender" value="0">
-                                                    <label for="gender0r" class="ml-2 mr-4">男性</label>
-                                                    <input type="radio" id="gender" name="gender1" v-model="form.gender" value="1">
+                                                    <label for="gender0" class="ml-2 mr-4">男性</label>
+                                                    <input type="radio" id="gender1" name="gender1" v-model="form.gender" value="1">
                                                     <label for="gender1" class="ml-2 mr-4">女性</label>
                                                     <input type="radio" id="gender2" name="gender" v-model="form.gender" value="2">
                                                     <label for="gender2" class="ml-2 mr-4">その他</label>
+                                                    <InputError :message="form.errors.gender" />
                                                 </div>
                                             </div>
                                             <div class="p-2 w-full">
                                                 <div class="relative">
                                                     <label for="memo" class="leading-7 text-sm text-gray-600">メモ</label>
                                                     <textarea id="memo" name="memo" v-model="form.memo"  class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
+                                                    <InputError :message="form.errors.memo" />
                                                 </div>
                                             </div>
                                             <div class="p-2 w-full">
